@@ -32,7 +32,7 @@ stdenv.mkDerivation rec {
       xorg.libXinerama xorg.libXi
     ]
     ++ lib.optional (openclSupport && !stdenv.isDarwin) ocl-icd
-    ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [OpenCL Cocoa CoreVideo IOKit AppKit AGL ])
+    ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [OpenCL Cocoa CoreVideo IOKit AppKit AGL MetalKit ])
     ++ lib.optional cudaSupport [
       cudaPackages.cuda_cudart
     ];
@@ -50,7 +50,6 @@ stdenv.mkDerivation rec {
     [ "-DNO_TUTORIALS=1"
       "-DNO_REGRESSION=1"
       "-DNO_EXAMPLES=1"
-      "-DNO_METAL=1" # don’t have metal in apple sdk
       (lib.cmakeBool "NO_OPENCL" (!openclSupport))
       (lib.cmakeBool "NO_CUDA" (!cudaSupport))
     ] ++ lib.optionals (!stdenv.isDarwin) [
