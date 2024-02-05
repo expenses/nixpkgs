@@ -8,7 +8,7 @@
 , python3
 , python3Packages
 , libffi
-, enableGoldPlugin ? true
+, enableGoldPlugin ? !stdenv.hostPlatform.isWindows
 , libbfd
 , libpfm
 , libxml2
