@@ -3,6 +3,7 @@
 , fetchFromGitHub
 , fetchpatch
 , cmake
+, static ? true
 }:
 
 stdenv.mkDerivation rec {
@@ -45,6 +46,8 @@ stdenv.mkDerivation rec {
       hash = "sha256-IfV/DDb0luxE1l6TofAbQIeJEVxCxZfZqcONGwQEndY=";
     })
   ];
+
+  cmakeFlags = lib.optionals static [ "-DBUILD_SHARED_LIBS=off" ];
 
   # Fix build with modern gcc
   # In member function 'void std::__atomic_base<_IntTp>::store(__int_type, std::memory_order) [with _ITp = bool]',
