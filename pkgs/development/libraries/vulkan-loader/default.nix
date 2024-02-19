@@ -34,6 +34,10 @@ stdenv.mkDerivation rec {
     }
   '';
 
+  postInstall = ''
+    ln -s $out/lib/libvulkan-1.{dll.a,a}
+  '';
+
   meta = with lib; {
     description = "LunarG Vulkan loader";
     homepage    = "https://www.lunarg.com";
