@@ -49,6 +49,8 @@ stdenv.mkDerivation rec {
   # Fix build with modern gcc
   # In member function 'void std::__atomic_base<_IntTp>::store(__int_type, std::memory_order) [with _ITp = bool]',
   NIX_CFLAGS_COMPILE = lib.optionals stdenv.cc.isGNU [ "-Wno-error=stringop-overflow" ] ++
+    # error: value computed is not used
+    lib.optionals stdenv.targetPlatform.isWindows [ "-Wno-error=unused-value" ] ++
     # error: variable 'val' set but not used
     lib.optionals stdenv.cc.isClang [ "-Wno-error=unused-but-set-variable" ] ++
     # Workaround for gcc-12 ICE when using -O3
@@ -62,6 +64,11 @@ stdenv.mkDerivation rec {
       --replace 'conformance_resumable_tasks' ""
   '';
 
+  # Workaround as tests try and include a missing omp.h
+  cmakeFlags = lib.optionals stdenv.targetPlatform.isWindows [
+    "-DTBB_TEST=false"
+  ];
+
   meta = with lib; {
     description = "Intel Thread Building Blocks C++ Library";
     homepage = "http://threadingbuildingblocks.org/";
@@ -74,7 +81,7 @@ stdenv.mkDerivation rec {
       represents a higher-level, task-based parallelism that abstracts platform
       details and threading mechanisms for scalability and performance.
     '';
-    platforms = platforms.unix;
+    platforms = platforms.unix ++ platforms.windows;
     maintainers = with maintainers; [ thoughtpolice tmarkus ];
   };
 }
