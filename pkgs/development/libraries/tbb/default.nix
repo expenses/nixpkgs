@@ -3,6 +3,7 @@
 , fetchFromGitHub
 , fetchpatch
 , cmake
+, static ? false
 }:
 
 stdenv.mkDerivation rec {
@@ -64,9 +65,10 @@ stdenv.mkDerivation rec {
       --replace 'conformance_resumable_tasks' ""
   '';
 
-  # Workaround as tests try and include a missing omp.h
-  cmakeFlags = lib.optionals stdenv.targetPlatform.isWindows [
-    "-DTBB_TEST=false"
+  cmakeFlags = [
+    (lib.cmakeBool "BUILD_SHARED_LIBS" (!static))
+    # Workaround as tests try and include a missing omp.h
+    (lib.cmakeBool "TBB_TEST" (!stdenv.targetPlatform.isWindows))
   ];
 
   meta = with lib; {
