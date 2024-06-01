@@ -9,10 +9,14 @@ buildPythonPackage rec {
   pname = "rfeed";
   version = "1.1.1";
 
-  src = fetchPypi {
-    inherit pname version;
-    sha256 = "sha256-qpUG8oZrdPWjItOUoUpjwZpoJcLZR1X/GdRt0eJDSBk=";
+  src = fetchGit {
+    url = "https://github.com/svpino/rfeed";
+    rev = "a4ccbcb40eb86d5a4bda26b4f49c3921b39be26e";
   };
+
+  patches = [
+    ./fix-tests.patch
+  ];
 
   meta = with lib; {
     description = "Extensible RSS 2.0 Feed Generator written in Python.";

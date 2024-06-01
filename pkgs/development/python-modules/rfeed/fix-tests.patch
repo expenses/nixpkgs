@@ -1,0 +1,16 @@
+diff --git a/tests.py b/tests.py
+index caae9f5..00b152c 100644
+--- a/tests.py
++++ b/tests.py
+@@ -19,9 +19,9 @@ class HostTestCase(BaseTestCase):
+ 
+ 	def test_add_extension(self):
+ 		host = Host()
+-		self.assertEquals(0, len(host.extensions))
++		self.assertEqual(0, len(host.extensions))
+ 		host.add_extension(MockExtension1())
+-		self.assertEquals(1, len(host.extensions))
++		self.assertEqual(1, len(host.extensions))
+ 
+ 	def test_add_extension_raises_error_if_extension_is_not_serializable(self):
+ 		host = Host()
