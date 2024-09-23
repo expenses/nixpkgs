@@ -4119,6 +4119,7 @@ with pkgs;
 
   libtensorflow = python3.pkgs.tensorflow.libtensorflow;
 
+  libtorch = callPackage ../development/libraries/science/math/libtorch/default.nix { };
   libtorch-bin = callPackage ../development/libraries/science/math/libtorch/bin.nix { };
 
   tensorflow-lite = callPackage ../development/libraries/science/math/tensorflow-lite { };
