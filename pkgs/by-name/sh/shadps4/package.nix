@@ -30,17 +30,20 @@
   zlib-ng,
 }:
 
-stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation {
   pname = "shadps4";
   version = "0.3.1-unstable-2024-09-30";
 
-  src = fetchFromGitHub {
-    owner = "shadps4-emu";
-    repo = "shadPS4";
-    rev = "348da93ee6b1c4784deeba38392efe4717bfd3b1";
-    hash = "sha256-a1PDUxIJMDEZMiNcddwfPJhNoivVpQSgZFqaa8tGmtc=";
-    fetchSubmodules = true;
-  };
+  src = /home/ashley/projects/shadPS4;
+
+  patches = [
+    # https://github.com/shadps4-emu/shadPS4/issues/758
+    ./bloodborne.patch
+    # https://github.com/shadps4-emu/shadPS4/pull/1146
+    ./fix-scissors.patch
+    # Fix controls without a numpad
+    ./laptop-controls.patch
+  ];
 
   buildInputs = [
     alsa-lib
@@ -90,7 +93,7 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   # Still in development, help with debugging
-  cmakeBuildType = "Debug";
+  cmakeBuildType = "RelWithDebugInfo";
   dontStrip = true;
 
   installPhase = ''
@@ -104,7 +107,12 @@ stdenv.mkDerivation (finalAttrs: {
   '';
 
   fixupPhase = ''
-    patchelf --add-rpath ${lib.makeLibraryPath [ vulkan-loader ]} \
+    patchelf --add-rpath ${
+      lib.makeLibraryPath [
+        vulkan-loader
+        xorg.libXi
+      ]
+    } \
       $out/bin/shadps4
   '';
 
@@ -116,4 +124,4 @@ stdenv.mkDerivation (finalAttrs: {
     mainProgram = "shadps4";
     platforms = lib.intersectLists lib.platforms.linux lib.platforms.x86_64;
   };
-})
+}
